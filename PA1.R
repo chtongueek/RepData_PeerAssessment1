@@ -1,23 +1,14 @@
----
-title: "PA1_template"
-author: "Andrew"
-date: "06/08/2015"
-output: html_document
+#### Loading and preprocessing ####
 
----
-#Loading and Preprocessing
-
-```{r, warning = F}
+graphics.off()
 # 1) Read in data
 data = read.csv("./activity.csv", header = T, stringsAsFactors = F)
 
 # 2) Pre-processing: making number of steps a numeric
 data$steps = as.numeric(data$steps)
-```
 
-#Mean Number of Steps Per day
+#### What is the mean total number of steps taken per day ####
 
-```{r}
 # 1) Calculate total number of steps per day
 steps1 = aggregate(data$steps, by = list(data$date), FUN = sum, na.rm = T)
 
@@ -28,16 +19,11 @@ hist(steps1[,2],10, main = "Steps Frequency", xlab = "Steps")
 steps2 = aggregate(data$steps, by = list(data$date), FUN = mean, na.rm = T)
 steps3 = aggregate(data$steps, by = list(data$date), FUN = median, na.rm = T)
 
-# Combine into one data frame
 totals = cbind(steps2, steps3[,2])
 
 names(totals) = c("Date", "Average Steps", "Median Steps")
 
-totals
-```
-
-#Average Daily Activity Pattern
-```{r}
+#### What is the average daily activity pattern ####
 # Get the mean number of steps per interval
 pat = aggregate(data$steps, by = list(data$interval), FUN = mean, na.rm = T)
 
@@ -45,17 +31,12 @@ pat = aggregate(data$steps, by = list(data$interval), FUN = mean, na.rm = T)
 plot(pat, type = 'l', main = "Average Steps", xlab = "Interval", ylab = "Steps")
 
 # 2) Get the interval with the maximum mean number of steps
-maxInt = pat[pat[,2] == max(pat[,2]), 1]
+maxInt = pat[max(pat[,2]), 1]
 
-maxInt
-```
+#### Imputing missing values ####
 
-#Imputing Missing Values
-The missing values are filled with the average value from the original data set of their corresponding 5-minute interval.
-```{r}
 # 1) Count the total number of NAs
 NAcount = sum(is.na(data))
-NAcount
 
 # 2) & 3)
 # Create second data frame equal to the first
@@ -77,13 +58,12 @@ rep2 = aggregate(data2$steps, by = list(data2$date), FUN = mean, na.rm = T)
 rep3 = aggregate(data2$steps, by = list(data2$date), FUN = median, na.rm = T)
 
 hist(rep1[,2], 10, main = "Step Frequency (NA replaced)", xlab = "Steps")
-```
 
-#Differences in Activity Patterns
-```{r}
+#### Differences in activity patterns ####
+
+## Date 1, 2012-10-01 is a Monday ##
 
 # 1)
-
 # Convert date to date type
 data2$date = as.Date(data2$date)
 
@@ -101,4 +81,3 @@ names(wkdy) = c("interval", "weekday", "steps")
 # 2)
 library(lattice)
 xyplot(wkdy$steps~wkdy$interval | wkdy$weekday, layout = c(1,2), type = 'l', xlab = "Interval", ylab = "Average Steps")
-```

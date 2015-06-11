@@ -5,7 +5,7 @@ date: "06/08/2015"
 output: html_document
 
 ---
-#Loading and Preprocessing
+#Loading and  Preprocessing
 
 
 ```r
